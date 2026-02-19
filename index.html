@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Move to Islam - Pro Edition</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --accent: #D4AF37;
+            --primary: #4ade80;
+            --bg: #020811;
+            --surface: rgba(255,255,255,0.05);
+            --border: rgba(255,255,255,0.1);
+            --text: #ffffff;
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: rgba(0,0,0,0.05);
+            --border: rgba(0,0,0,0.1);
+            --text: #0f172a;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; margin: 0; height: 100vh; overflow: hidden; }
+
+        /* --- Custom Header --- */
+        .app-bar { 
+            padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; 
+            background: var(--surface); backdrop-filter: blur(20px); 
+            position: fixed; top: 0; width: 100%; z-index: 1000; border-bottom: 1px solid var(--border);
+        }
+
+        /* --- Premium Navigation --- */
+        .navbar { 
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px; 
+            background: var(--surface); border-radius: 25px; border: 1px solid var(--border); 
+            display: flex; justify-content: space-around; align-items: center; z-index: 1001; backdrop-filter: blur(20px);
+        }
+        .nav-link { color: var(--text); opacity: 0.4; text-align: center; font-size: 10px; cursor: pointer; flex: 1; }
+        .nav-link.active { opacity: 1; color: var(--primary); font-weight: 700; }
+        .nav-link i { font-size: 20px; display: block; margin-bottom: 4px; }
+
+        /* --- Page System --- */
+        .page-container { position: absolute; top: 75px; bottom: 100px; width: 100%; overflow-y: auto; padding: 10px; }
+        .page { display: none; animation: slideUp 0.4s ease-out; }
+        .page.active { display: block; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- Dashboard Grid --- */
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+        .dash-card { 
+            background: var(--surface); border: 1px solid var(--border); padding: 25px 15px; 
+            border-radius: 24px; text-align: center; cursor: pointer;
+        }
+        .dash-card i { font-size: 28px; color: var(--accent); margin-bottom: 12px; }
+
+        /* --- Audio Player UI --- */
+        .audio-container {
+            background: var(--primary); color: #000; padding: 15px; border-radius: 20px;
+            margin: 15px 0; display: flex; align-items: center; gap: 15px;
+        }
+        audio { display: none; }
+
+        /* --- Settings List --- */
+        .setting-item {
+            background: var(--surface); padding: 15px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+
+        /* --- AI Chat UI --- */
+        #ai-box { height: 45vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px; }
+        .msg { padding: 12px 16px; border-radius: 18px; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .user-msg { align-self: flex-end; background: var(--primary); color: #000; border-bottom-right-radius: 2px; }
+        .ai-msg { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="app-bar">
+        <div onclick="toggleTheme()" class="btn-icon"><i id="theme-icon" class="fa-solid fa-moon"></i></div>
+        <div style="font-weight:700; letter-spacing:1px; font-size: 18px;">MTI <span style="color:var(--primary)">PRO</span></div>
+        <div onclick="switchLang()" class="btn-icon"><i class="fa-solid fa-language"></i></div>
+    </div>
+
+    <div class="page-container">
+        <div id="home" class="page active">
+            <div style="text-align:center; padding:30px 0;">
+                <h1 id="digital-time" style="font-size:50px; margin:0; font-weight: 700;">00:00</h1>
+                <p id="hijri-date" style="color:var(--accent); font-weight: 600;">LOADING DATE...</p>
+            </div>
+            <div id="prayer-list"></div>
+            <div class="card-grid">
+                <div class="dash-card" onclick="nav('quran', null); loadSurahs();"><i class="fa-solid fa-book-quran"></i><br><span data-bn="কুরআন" data-en="Quran">Quran</span></div>
+                <div class="dash-card" onclick="nav('tasbih', null)"><i class="fa-solid fa-fingerprint"></i><br><span data-bn="তসবিহ" data-en="Tasbih">Tasbih</span></div>
+                <div class="dash-card" onclick="nav('ai', null)"><i class="fa-solid fa-robot"></i><br><span data-bn="এআই চ্যাট" data-en="AI Chat">AI Chat</span></div>
+                <div class="dash-card" onclick="nav('names', null); loadNames();"><i class="fa-solid fa-heart"></i><br><span data-bn="নামসমূহ" data-en="Names">Names</span></div>
+            </div>
+        </div>
+
+        <div id="quran" class="page">
+            <div id="surah-list"></div>
+            <div id="ayah-view" style="display:none;">
+                <div class="audio-container">
+                    <i class="fa-solid fa-play" id="play-icon" onclick="toggleAudio()" style="font-size: 24px; cursor:pointer;"></i>
+                    <div style="flex:1">
+                        <small id="now-playing">Select Surah</small>
+                        <audio id="main-audio" controls></audio>
+                    </div>
+                </div>
+                <button onclick="closeQuran()" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--surface); color:var(--text); margin-bottom:15px;">← Back</button>
+                <div id="ayah-list"></div>
+            </div>
+        </div>
+
+        <div id="ai" class="page">
+            <div id="ai-box"></div>
+            <div style="padding:15px; display:flex; gap:10px;">
+                <input type="text" id="ai-in" style="flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:15px; border-radius:15px;" placeholder="Ask anything...">
+                <button onclick="askAI()" style="background:var(--primary); border:none; width:55px; border-radius:15px; color:#000;"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <div id="settings" class="page">
+            <div class="setting-item">
+                <span>Dark Mode</span>
+                <input type="checkbox" checked onchange="toggleTheme()">
+            </div>
+            <div class="setting-item">
+                <span>App Language</span>
+                <button onclick="switchLang()" id="lang-btn" style="background:var(--primary); border:none; padding:5px 15px; border-radius:10px;">EN</button>
+            </div>
+            <div style="background:var(--surface); padding:20px; border-radius:20px; text-align:center; margin-top:20px;">
+                <img id="u-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--primary);">
+                <h3 id="u-name">User Pro</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div class="nav-link active" onclick="nav('home', this)"><i class="fa-solid fa-house"></i>Home</div>
+        <div class="nav-link" onclick="nav('quran', this); loadSurahs();"><i class="fa-solid fa-book-open"></i>Quran</div>
+        <div class="nav-link" onclick="nav('ai', this)"><i class="fa-solid fa-robot"></i>AI</div>
+        <div class="nav-link" onclick="nav('settings', this)"><i class="fa-solid fa-gear"></i>Settings</div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+        let isPlaying = false;
+
+        function nav(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(el) el.classList.add('active');
+        }
+
+        // --- Theme Engine ---
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            if(body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.className = 'fa-solid fa-sun';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        // --- Language Engine ---
+        function switchLang() {
+            currentLang = currentLang === 'en' ? 'bn' : 'en';
+            document.getElementById('lang-btn').innerText = currentLang.toUpperCase();
+            document.querySelectorAll('[data-bn]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`);
+            });
+            getPrayers();
+        }
+
+        // --- Quran with Audio ---
+        async function loadSurahs() {
+            const list = document.getElementById('surah-list');
+            if(list.innerHTML !== "") return;
+            const res = await fetch('https://api.alquran.cloud/v1/surah');
+            const data = await res.json();
+            list.innerHTML = data.data.map(s => `
+                <div class="dash-card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; text-align:left;" onclick="loadAyahs(${s.number}, '${s.englishName}')">
+                    <div><b>${s.number}. ${s.englishName}</b><br><small>${s.numberOfAyahs} Ayahs</small></div>
+                    <div style="font-size:20px; color:var(--primary)">${s.name}</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadAyahs(id, name) {
+            document.getElementById('surah-list').style.display = 'none';
+            document.getElementById('ayah-view').style.display = 'block';
+            document.getElementById('now-playing').innerText = "Surah " + name;
+            
+            // Audio setup (Using global reciter Mishary Rashid Alafasy)
+            const audio = document.getElementById('main-audio');
+            audio.src = `https://download.quranicaudio.com/qdc/mishari_rashid_al_afasy/murattal/${id}.mp3`;
+            
+            const list = document.getElementById('ayah-list');
+            list.innerHTML = "Loading Ayahs...";
+            const res = await fetch(`https://api.alquran.cloud/v1/surah/${id}/editions/quran-uthmani,bn.bengali`);
+            const data = await res.json();
+            
+            list.innerHTML = data.data[0].ayahs.map((a, i) => `
+                <div style="padding:20px 0; border-bottom:1px solid var(--border)">
+                    <div style="text-align:right; font-size:24px; color:var(--accent); margin-bottom:10px;">${a.text}</div>
+                    <div style="font-size:14px; opacity:0.8;">${data.data[1].ayahs[i].text}</div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('main-audio');
+            const icon = document.getElementById('play-icon');
+            if(audio.paused) {
+                audio.play();
+                icon.className = 'fa-solid fa-pause';
+            } else {
+                audio.pause();
+                icon.className = 'fa-solid fa-play';
+            }
+        }
+
+        function closeQuran() {
+            document.getElementById('surah-list').style.display = 'block';
+            document.getElementById('ayah-view').style.display = 'none';
+            document.getElementById('main-audio').pause();
+        }
+
+        // --- Strong AI ---
+        async function askAI() {
+            const inpt = document.getElementById('ai-in');
+            const box = document.getElementById('ai-box');
+            if(!inpt.value) return;
+            
+            const q = inpt.value;
+            box.innerHTML += `<div class="msg user-msg">${q}</div>`;
+            inpt.value = "";
+            box.scrollTop = box.scrollHeight;
+
+            const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(q)}?system=You are a professional Islamic scholar assistant. Give accurate, polite, and references-based answers in the user's language.`);
+            const text = await res.text();
+            
+            box.innerHTML += `<div class="msg ai-msg">${text}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- Time & Prayer ---
+        setInterval(() => {
+            document.getElementById('digital-time').innerText = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        }, 1000);
+
+        async function getPrayers() {
+            const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Dhaka&country=Bangladesh&method=2');
+            const data = await res.json();
+            const t = data.data.timings;
+            document.getElementById('hijri-date').innerText = data.data.date.hijri.day + " " + data.data.date.hijri.month.en + " " + data.data.date.hijri.year;
+            
+            document.getElementById('prayer-list').innerHTML = `
+                <div style="display:flex; overflow-x:auto; gap:10px; padding:10px 0;">
+                    ${['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].map(p => `
+                        <div style="background:var(--surface); padding:15px; border-radius:15px; min-width:100px; text-align:center; border:1px solid var(--border)">
+                            <small>${p}</small><br><b style="color:var(--primary)">${t[p]}</b>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        window.onload = () => {
+            getPrayers();
+            // Load saved profile
+            const name = localStorage.getItem('u_name') || "User Pro";
+            document.getElementById('u-name').innerText = name;
+        };
+    </script>
+</body>
+  </html>
