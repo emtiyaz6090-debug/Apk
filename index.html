@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Pro - Elite Edition</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --accent: #D4AF37; /* Royal Gold */
+            --primary: #4ade80; /* Prayer Green */
+            --bg: #020811; 
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.15), transparent),
+                url('https://www.transparenttextures.com/patterns/black-linen.png');
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding-bottom: 100px;
+            min-height: 100vh;
+        }
+
+        /* Profile Header */
+        .header {
+            padding: 40px 25px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-frame {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            padding: 3px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+        }
+
+        .profile-frame img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .welcome-text h2 { margin: 0; font-size: 18px; font-weight: 600; color: #fff; }
+        .welcome-text p { margin: 0; font-size: 12px; color: var(--accent); opacity: 0.8; }
+
+        /* Analog Clock Section */
+        .hero-section { text-align: center; padding: 10px 0; }
+        .clock-circle {
+            width: 200px; height: 200px;
+            margin: 0 auto 20px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; transform: translateX(-50%); border-radius: 10px; }
+        .h-hand { width: 6px; height: 50px; background: #fff; z-index: 2; }
+        .m-hand { width: 4px; height: 75px; background: var(--accent); z-index: 3; }
+        .s-hand { width: 2px; height: 85px; background: #ff4757; z-index: 4; }
+        .dot { position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; background: #fff; border-radius: 50%; transform: translate(-50%, -50%); z-index: 5; border: 2px solid var(--bg); }
+
+        #digital-time { font-size: 42px; font-weight: 700; color: #fff; margin-top: 10px; }
+        #location-status { font-size: 11px; color: var(--primary); letter-spacing: 1px; opacity: 0.8; }
+
+        /* Fasting Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 25px; }
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 25px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+        }
+        .card span { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; display: block; }
+        .card b { font-size: 22px; color: var(--accent); margin-top: 5px; display: block; }
+
+        /* Prayer List */
+        .prayer-area { padding: 0 25px; }
+        .prayer-row {
+            background: var(--glass);
+            margin-bottom: 12px;
+            padding: 18px 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+        .prayer-row .name { font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 12px; }
+        .prayer-row .time { color: var(--primary); font-weight: 700; font-size: 16px; }
+
+        /* Settings Page Styling */
+        .settings-container { padding: 25px; }
+        .input-box {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid var(--border);
+            background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 20px; font-family: 'Poppins';
+        }
+        .btn-upload {
+            padding: 12px 25px; background: var(--accent); color: #000;
+            border-radius: 12px; font-weight: 600; cursor: pointer; display: inline-block; margin-bottom: 20px;
+        }
+        .btn-save {
+            width: 100%; padding: 15px; background: var(--primary); color: #000;
+            border-radius: 15px; font-weight: 700; border: none; cursor: pointer;
+        }
+
+        /* Nav Bar */
+        .navbar {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px;
+            background: rgba(2, 8, 17, 0.9); border-radius: 25px;
+            border: 1px solid var(--border); display: flex;
+            justify-content: space-around; align-items: center; backdrop-filter: blur(20px);
+        }
+        .nav-link { color: rgba(255,255,255,0.3); text-align: center; cursor: pointer; font-size: 10px; transition: 0.3s; }
+        .nav-link.active { color: var(--primary); transform: translateY(-5px); }
+        .nav-link i { font-size: 24px; display: block; margin-bottom: 5px; }
+
+        /* Pages */
+        .page { display: none; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Quran Viewer Style */
+        #q-viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; color: #111; z-index: 3000; display: none; flex-direction: column; }
+        .q-head { background: var(--bg); color: #fff; padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .q-body { flex: 1; overflow-y: auto; padding: 30px; line-height: 2.5; font-size: 19px; }
+
+        /* Tasbih */
+        .t-circle {
+            width: 220px; height: 220px; border: 5px solid var(--accent);
+            border-radius: 50%; margin: 50px auto; display: flex;
+            align-items: center; justify-content: center; font-size: 60px;
+            font-weight: 700; color: var(--primary); background: rgba(212, 175, 55, 0.05);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="page active">
+        <div class="header">
+            <div class="profile-frame">
+                <img id="avatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            </div>
+            <div class="welcome-text">
+                <h2 id="display-name">Hello, User</h2>
+                <p>Welcome to Islamic Pro</p>
+            </div>
+        </div>
+
+        <div class="hero-section">
+            <div class="clock-circle">
+                <div class="hand h-hand" id="hr"></div>
+                <div class="hand m-hand" id="mn"></div>
+                <div class="hand s-hand" id="sc"></div>
+                <div class="dot"></div>
+            </div>
+            <div id="digital-time">00:00:00</div>
+            <div id="location-status">SYNCING LOCATION...</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <span>Sahri Ends</span>
+                <b id="sahri-v">--:--</b>
+            </div>
+            <div class="card">
+                <span>Iftar Starts</span>
+                <b id="iftar-v">--:--</b>
+            </div>
+        </div>
+
+        <div class="prayer-area" id="prayer-rows"></div>
+    </div>
+
+    <div id="quran" class="page">
+        <div style="padding: 25px;">
+            <h2 style="color: var(--accent);">The Holy Quran</h2>
+            <div id="surah-container"></div>
+        </div>
+    </div>
+
+    <div id="tasbih" class="page">
+        <h2 style="text-align: center; margin-top: 40px; color: var(--accent);">Tasbih Counter</h2>
+        <div class="t-circle" onclick="addCount()">0</div>
+        <div style="text-align: center;">
+            <button onclick="resetCount()" style="background: none; border: 1px solid #ff4757; color: #ff4757; padding: 10px 30px; border-radius: 10px; cursor: pointer;">Reset Counter</button>
+        </div>
+    </div>
+
+    <div id="settings" class="page">
+        <div class="settings-container">
+            <h2 style="color: var(--accent);">App Settings</h2>
+            <div class="input-box">
+                <label class="btn-upload">
+                    <i class="fa-solid fa-camera"></i> Change Avatar
+                    <input type="file" id="img-upload" style="display:none" accept="image/*">
+                </label>
+                <input type="text" id="name-input" placeholder="Type your name here">
+                <button class="btn-save" onclick="updateProfile()">SAVE SETTINGS</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="q-viewer">
+        <div class="q-head">
+            <i class="fa-solid fa-arrow-left" onclick="closeQ()" style="font-size: 22px; cursor:pointer;"></i>
+            <span id="q-name" style="font-weight: 600;">Surah Name</span>
+        </div>
+        <div id="q-audio" style="padding:15px; background: #f4f4f4;"></div>
+        <div class="q-body" id="q-text"></div>
+    </div>
+
+    <div class="navbar">
+        <div class="nav-link active" onclick="switchTab('home', this)"><i class="fa-solid fa-mosque"></i>Home</div>
+        <div class="nav-link" onclick="switchTab('quran', this)"><i class="fa-solid fa-book-quran"></i>Quran</div>
+        <div class="nav-link" onclick="switchTab('tasbih', this)"><i class="fa-solid fa-fingerprint"></i>Tasbih</div>
+        <div class="nav-link" onclick="switchTab('settings', this)"><i class="fa-solid fa-gear"></i>Settings</div>
+    </div>
+
+    <script>
+        // Global State
+        let counter = 0;
+
+        // --- Core Functions ---
+        function switchTab(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // --- Profile Logic ---
+        function updateProfile() {
+            const name = document.getElementById('name-input').value;
+            const file = document.getElementById('img-upload').files[0];
+            
+            if(name) {
+                localStorage.setItem('user_name', name);
+                document.getElementById('display-name').innerText = name;
+            }
+            
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    localStorage.setItem('user_img', e.target.result);
+                    document.getElementById('avatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            alert("Settings Saved Successfully!");
+        }
+
+        function loadProfile() {
+            const name = localStorage.getItem('user_name');
+            const img = localStorage.getItem('user_img');
+            if(name) {
+                document.getElementById('display-name').innerText = name;
+                document.getElementById('name-input').value = name;
+            }
+            if(img) document.getElementById('avatar').src = img;
+        }
+
+        // --- Clock Logic ---
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('digital-time').innerText = d.toLocaleTimeString('en-GB');
+            const s = d.getSeconds(), m = d.getMinutes(), h = d.getHours();
+            document.getElementById('sc').style.transform = `translateX(-50%) rotate(${s*6}deg)`;
+            document.getElementById('mn').style.transform = `translateX(-50%) rotate(${m*6}deg)`;
+            document.getElementById('hr').style.transform = `translateX(-50%) rotate(${h*30 + m*0.5}deg)`;
+        }, 1000);
+
+        // --- API & Location ---
+        async function getPrayers(lat, lon) {
+            try {
+                const r = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=1`);
+                const d = await r.json();
+                const t = d.data.timings;
+                
+                document.getElementById('location-status').innerText = "LOCATION SYNCED";
+                document.getElementById('sahri-v').innerText = t.Fajr;
+                document.getElementById('iftar-v').innerText = t.Maghrib;
+
+                const list = [
+                    {n:'Fajr', t:t.Fajr, i:'fa-cloud-moon'},
+                    {n:'Dhuhr', t:t.Dhuhr, i:'fa-sun'},
+                    {n:'Asr', t:t.Asr, i:'fa-cloud-sun'},
+                    {n:'Maghrib', t:t.Maghrib, i:'fa-moon'},
+                    {n:'Isha', t:t.Isha, i:'fa-star-and-crescent'}
+                ];
+                
+                document.getElementById('prayer-rows').innerHTML = list.map(p => `
+                    <div class="prayer-row">
+                        <div class="name"><i class="fa-solid ${p.i}" style="color:var(--accent)"></i> ${p.n}</div>
+                        <div class="time">${p.t}</div>
+                    </div>
+                `).join('');
+            } catch(e) { document.getElementById('location-status').innerText = "CONNECTION ERROR"; }
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (p) => getPrayers(p.coords.latitude, p.coords.longitude),
+            () => getPrayers(23.8103, 90.4125)
+        );
+
+        // --- Quran System ---
+        async function loadSurahList() {
+            const r = await fetch('https://api.alquran.cloud/v1/surah');
+            const d = await r.json();
+            document.getElementById('surah-container').innerHTML = d.data.map(s => `
+                <div class="prayer-row" style="cursor:pointer" onclick="openSurah(${s.number}, '${s.englishName}')">
+                    <div class="name">${s.number}. ${s.englishName}</div>
+                    <div class="time"><i class="fa-solid fa-circle-play"></i></div>
+                </div>
+            `).join('');
+        }
+
+        async function openSurah(id, name) {
+            const v = document.getElementById('q-viewer');
+            v.style.display = 'flex';
+            document.getElementById('q-name').innerText = name;
+            document.getElementById('q-audio').innerHTML = `<audio src="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${id}.mp3" controls style="width:100%"></audio>`;
+            
+            const [ar, bn] = await Promise.all([
+                fetch(`https://api.alquran.cloud/v1/surah/${id}`),
+                fetch(`https://api.alquran.cloud/v1/surah/${id}/bn.bengali`)
+            ]);
+            const arD = await ar.json(), bnD = await bn.json();
+            
+            document.getElementById('q-text').innerHTML = arD.data.ayahs.map((a, i) => `
+                <div style="margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <p style="text-align:right; font-size:26px; color:#1a472a; margin-bottom:10px;">${a.text}</p>
+                    <p style="font-size:15px; color:#555;">${bnD.data.ayahs[i].text}</p>
+                </div>
+            `).join('');
+        }
+        function closeQ() { document.getElementById('q-viewer').style.display = 'none'; }
+
+        // --- Tasbih ---
+        function addCount() { counter++; document.querySelector('.t-circle').innerText = counter; if(navigator.vibrate) navigator.vibrate(40); }
+        function resetCount() { counter = 0; document.querySelector('.t-circle').innerText = 0; }
+
+        // --- Init ---
+        loadProfile();
+        loadSurahList();
+    </script>
+</body>
+</html>
